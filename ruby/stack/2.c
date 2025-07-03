@@ -51,7 +51,7 @@ int main() {
 	scanf("%d", &n);
 	char ans[10];
 	for (int i = 0;i < n;i++) {
-		scanf("%s", ans);
+		scanf("%s", ans);5
 
 
 		if (strcmp(ans, "push") == 0) {
