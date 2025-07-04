@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #define STACK_MAX_SIZE 10000
 
-typedef struct _Stack{
+typedef struct Stack{
     int top;
     int number[STACK_MAX_SIZE];
 }Stack;
