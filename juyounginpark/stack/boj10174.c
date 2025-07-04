@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,7 +26,7 @@ void push(Node **head, Node **tail, char data) {
     *tail = new_node;
 }
 
-void pop_tail(Node **head, Node **tail) {
+void pop(Node **head, Node **tail) {
     if (*head == NULL) return;
 
     if (*head == *tail) {
@@ -40,24 +41,9 @@ void pop_tail(Node **head, Node **tail) {
     free(temp);
 }
 
-void pop_head(Node **head, Node **tail) {
-    if (*head == NULL) return;
-
-    if (*head == *tail) {
-        free(*head);
-        *head = *tail = NULL;
-        return;
-    }
-
-    Node *temp = *head;
-    *head = (*head)->next;
-    (*head)->prev = NULL;
-    free(temp);
-}
-
 void clear(Node **head, Node **tail) {
     while (*head) {
-        pop_tail(head, tail);
+        pop(head, tail);
     }
 }
 
@@ -81,15 +67,15 @@ int main() {
 
     int n;
     scanf("%d", &n);
-
-    char str[51];
+    getchar();
+    char str[20];
     while (n--) {
-        scanf("%s", str);
-
         clear(&head, &tail);
-
-        for (int i = 0; str[i]; i++) {
-            push(&head, &tail, str[i]);
+        for(int i=0;;i++) {
+            char c;
+            c = getchar();
+            if(c=='\n') break;
+            push(&head, &tail, (c>='a'&&c<='z'?c-'a'+'A':c));
         }
 
         if (is_palindrome(&head, &tail)) {
@@ -97,6 +83,9 @@ int main() {
         } else {
             printf("No\n");
         }
+        
+        
+
     }
 
     clear(&head, &tail);
