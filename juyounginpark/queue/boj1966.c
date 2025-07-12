@@ -7,9 +7,10 @@ typedef struct Node {
     struct Node *next;
 }Node;
 
-void push(Node **head, Node **tail, int data) {
+void push(Node **head, Node **tail, int data,int THIS) {
     Node *new_node = (Node *)malloc(sizeof(Node));
     new_node->data = data;
+    new_node->THIS = THIS;
     new_node->next = NULL;
 
     if(*head == NULL) {
@@ -23,39 +24,19 @@ void push(Node **head, Node **tail, int data) {
     return;
 }
 
-int pop(Node **head, Node **tail) {
-    int data;
-    if(*head == NULL) return -1;
-    if((*head)->next == NULL) {
-        data = (*head)->data;
-        free(*head);
-        *head = NULL;
-        *tail = NULL;
-        return data;
-    }
-    
-    data = (*head)->data;
+void pop_butnotrealpop(Node **head, Node **tail) {
+    if(*head == *tail) return;
     Node *temp = *head;
-    *head = (*head)->next;
-    free(temp);
-    return data;
-    
+    (*head) = (*head) -> next;
+    temp -> next = NULL;
+    (*tail)->next = temp;
+    *tail = temp;
 }
 
-void printN(Node **head) {
-    Node *curr = *head;
-    while(curr) {
-        printf("%d ", curr->data);
-        curr = curr->next;
-    }
-    putchar('\n');
-}
-
-int MAX(Node **head) {
-    Node *curr = *head;
+int max(Node *curr) {
     int M = 0;
     while(curr) {
-        if(M < curr->data ) M = curr->data;
+        if(curr->data > M) M = curr->data;
         curr = curr->next;
     }
     return M;
@@ -63,54 +44,52 @@ int MAX(Node **head) {
 
 void clear(Node **head, Node **tail) {
     while(*head) {
-        pop(head, tail);
+        Node *temp = *head;
+        (*head) = (*head) -> next;
+        free(temp);
     }
-    head = NULL;
-    tail = NULL;
+    *head = NULL;
+    *tail = NULL;
+    return;
 }
+
 int main() {
     Node *head = NULL;
     Node *tail = NULL;
     int N;
     scanf("%d", &N);
 
-    while(N--) {
-    int M, K;
-        int sign = 0;
-        scanf("%d %d", &M, &K);
-        for(int i=0; i<M; i++) {
-            int buffer;
-            scanf("%d", &buffer);
-            push(&head, &tail, buffer);
-            if(i==K) {
-                tail->THIS = 1;
-            }
-            else {
-                tail->THIS = 0;
-            }
-        }
-        int num = 0;
-        while(1) {
-            int max = MAX(&head);
-            if(max == head->data) {
-                num++;
-                if(head->THIS) {
-                    break;
-                }
-                else {
-                    Node *temp = head;
-                    tail->next = temp;
-                    pop(&head, &tail);
-                }
-            }
-            else {
-                push(&head, &tail, pop(&head, &tail));
-            }
 
-            
+    while(N--) {
+        
+
+        int k, m;
+        scanf("%d %d", &k, &m);
+
+        int buffer;
+        for(int i = 0; i < k; i++) {
+            scanf("%d", &buffer);
+            push(&head, &tail, buffer, (i==m ? 1 : 0));
         }
+
+
+        int res = 0;
+        while(1) {
+            if(head->data == max(head)) {
+                res++;
+                if(head->THIS) break;
+                Node *temp = head;
+                head = head->next;
+                free(temp);
+                
+            }
+            else {
+                pop_butnotrealpop(&head, &tail);
+            }
+        }
+        printf("%d\n", res);
         clear(&head, &tail);
-        printf("%d\n", num);
     }
     
+
 }
